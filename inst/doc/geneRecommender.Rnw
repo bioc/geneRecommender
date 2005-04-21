@@ -1,0 +1,215 @@
+%\VignetteIndexEntry{Using the geneRecommender Package}
+%\VignetteDepends{geneRecommender}
+%\VignetteKeywords{Expression Analysis}
+%\VignettePackage{geneRecommender}
+
+\documentclass{article}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\author{Greg Hather}
+\begin{document}
+\title{Using the geneRecommender Package}
+
+\maketitle
+
+\section{What is geneRecommender?}
+
+\Rpackage{geneRecommender} is a package used to identify coexpressed genes in microarray data.  
+In particular, the package ranks genes according to how strongly
+they correlate with a set of query genes over the experiments for which the
+query genes behave in a similar fashion.  
+The query genes, which are chosen by the user, are intended to be genes known 
+to be involved in a process of interest.  
+Since genes which are coexpressed are more likely to be functionally related, 
+the ranked list produced by \Rpackage{geneRecommender} 
+will suggest other genes which are involved in or related to the process of interest.  
+The package is an implementation of the Gene Recommender algorithm developed by Owen et al \cite{owen}.    
+\Rpackage{geneRecommender} is designed
+to work even with a significant amount of missing data.  
+
+\section{An Example}
+
+Suppose we are analyzing the \Robject{geneData} dataset in the 
+\Rpackage{Biobase} package.  
+The data consists of gene expression levels for 500 probesets
+across 26 experiments.  
+As a fictional example, suppose that the probe sets 
+``31613\_at'', ``31712\_at'', and ``31497\_at'' correspond to
+genes known to have closely related functions.  Suppose that we wish to use the set for
+a \Rpackage{geneRecommender} query.  The first step is to normalize the dataset with the
+\Rfunction{gr.normalize} function.  The second step is to apply the
+\Rfunction{gr.main} function to the normalized data.  
+
+<<>>=
+library(geneRecommender)
+data(geneData)
+my.query <- c("31613_at", "31712_at", "31497_at")
+normalized.data <- gr.normalize(geneData)
+gr.main(normalized.data, my.query, ngenes = 10)
+@
+
+The result is a list containing a single item named \Robject{main.result}.  \Robject{main.result} is a matrix
+with \Robject{ngenes} rows and two columns.  The first column tabulates the top \Robject{ngenes} identified
+by the algorithm, listed in the order of decreasing score.  
+The second column identifies the genes in the result that were in the query.  
+
+\section{Cross Validation}
+
+In some cases, the user will be interested in judging the performance of
+\Rpackage{geneRecommender} for a given query.  To this end, the function
+\Rfunction{gr.cv} performs leave-one-out cross validation.  
+The input for \Rfunction{gr.cv} is the normalized dataset and the query.  
+The output for \Rfunction{gr.cv} is a vector containing the rank 
+of each element in the query
+produced by applying \Rfunction{gr.main} to the query with
+that element removed.  
+
+<<>>=
+gr.cv(normalized.data, my.query)
+@
+
+In addition to measuring performance, the results of the cross validation
+can be used to determine if some element(s) in the query might not belong.  
+If one of the elements in the above vector had been very large,
+one would suspect that the associated gene was regulated differently
+than the other genes in the query.  
+
+\section{Additional Options}
+
+For users interested in modifying the workings of the algorithm or seeing
+additional output, the \Rpackage{geneRecommender} package is fairly accommodating.  
+This is explained in the following subsections, 
+some of which use notation from the Owen et al paper \cite{owen}.  
+
+\subsection{Normalization}
+
+\Rfunction{gr.normalize} normalizes the dataset so that for each gene, 
+the normalized expression values of the experiments are 
+distributed uniformly between -1 and 1.  
+However, alternative normalizations are certainly possible, 
+either by writing one's own normalization function, or by
+further processing the output of \Rfunction{gr.normalize}.  
+For example, the data could be normalized so that for each gene, 
+the normalized expression values of the experiments 
+have a standard normal distribution.  
+This can be easily done by applying \Rfunction{qnorm} to the result 
+of \Rfunction{gr.normalize}.  
+
+<<results=hide>>=
+normal.normalized.data <- qnorm((normalized.data + 1)/2)
+gr.main(normal.normalized.data, my.query, ngenes = 10)
+@
+
+This type of normalization may be better, but no one
+knows with certainty at the time of this writing.  
+
+\subsection{Scoring function}
+
+The scoring function allows the algorithm to choose how
+many experiments to include in the calculation.  
+It is a function applied to the ranks in $S_{G}(i)$ 
+of the query genes.  The algorithm selects the number of experiments
+which minimizes the result of the scoring function, breaking ties in favor
+of the largest experiment set.  The default scoring function is
+\Rfunction{median}, which is the same choice used in the paper.  
+However, other choices of the scoring function are possible.    
+
+<<results=hide>>=
+my.fun.1 <- function(input.vector){
+  sum(input.vector^(1/2), na.rm = T)
+}
+gr.main(normalized.data, my.query, ngenes = 10, fun = my.fun.1)
+@
+
+This type of scoring function may be better, but no one
+knows with certainty at the time of this writing.  
+
+\subsection{Including all experiments}
+
+Suppose that out of curiosity, the user wishes to include ALL
+experiments in the calculation.  
+Based on the discussion in the previous subsection, it should be
+apparent that setting \Rfunction{fun} to be a constant function will achieve this goal.  
+
+<<results=hide>>=
+my.fun.2 <- function(input.vector){
+  1
+}
+gr.main(normalized.data, my.query, ngenes = 10, fun = my.fun.2)
+@
+
+
+\subsection{Extra output}
+
+When the \Rfunction{gr.main} parameter \Robject{extra} is set to TRUE, the function will
+calculate several additional items and include these items in the result.  
+Thus, the function will take slightly longer to execute.  
+
+<<>>=
+options(digits = 2)
+gr.main(normalized.data, my.query, ngenes = 10, extra = T)
+@
+
+\begin{description}
+
+\item[fifty.percent.recall] is the number of genes found at 50 percent recall.  
+
+\item[experiments.included] is a vector containing the names of the experiments included in the analysis.  
+
+\item[experiments.excluded] is a vector containing the names of the experiments excluded from the analysis.  
+
+\item[s.g.i] represents the values $S_{G}(i)$.  \Robject{s.g.i} is an array used as a measure of 
+biological significance for each gene.  
+The output is ranked by this quantity.  
+
+\item[z.g.i] represents the values $Z_{G}(i)$.  \Robject{z.g.i} is an array used as a measure of 
+statistical significance for each gene.  
+
+\item[contribution] is a matrix indicating the contribution of each experiment to each gene result. 
+For a given gene and a given experiment, \Robject{contribution} indicates how
+strongly the experiment suggests that the gene should be high ranking.  
+Using notation from the article, \Robject{contribution} is defined as $\bar{Y}_{Q,j} \times Y_{ij}$.  
+
+\end{description}
+
+\section{Notes}
+The results from this package will 
+differ somewhat from the results generated from the code used in \cite{owen}.  
+This is because \Rpackage{geneRecommender}
+uses an incremental method for determining the number of 
+experiments to include, whereas the code described in \cite{owen} uses
+a less accurate grid approach.  Also, for the sake of robustness, 
+\Rpackage{geneRecommender}
+sets $\bar{Y}_{Q,j}$ to be $median(Y_{i,j}:i \in Q)$
+rather than $mean(Y_{i,j}:i \in Q)$.  
+
+\section{Session Information}
+
+The version number of R and packages loaded for generating the vignette were:
+
+<<echo=FALSE,results=tex>>=
+toLatex(sessionInfo())
+@
+
+
+\begin{thebibliography}{99}
+
+\bibitem{owen}
+  Art B.\ Owen, Josh Stuart, Kathy Mach, Anne M.\ Villeneuve, and Stuart Kim.  
+  ``A Gene Recommender Algorithm to Identify Coexpressed Genes in C.\ elegans.''  
+  \textit{Genome Research} 13:1828-1837, 2003.  
+
+\end{thebibliography}
+
+\end{document}
+
