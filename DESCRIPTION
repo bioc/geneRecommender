@@ -13,4 +13,5 @@ Description: This package contains a targeted clustering algorithm for
         discovery of new genes with similar functions to a given list
         of genes already known to have closely related functions.
 License: GPL version 2 or newer
+biocViews: Microarray, Clustering
 
