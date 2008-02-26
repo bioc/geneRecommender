@@ -10,7 +10,7 @@ gr.cv(normalized.dataset, query, fun = median)
 }
 \arguments{
   \item{normalized.dataset}{
-    A matix or exprSet containing the normalized gene expression data.  
+    A matrix or ExpressionSet containing the normalized gene expression data.  
     The rows correspond to genes, the columns correspond to experiments, and the
     entries correspond to the gene expression levels.  The rows must be labeled.  
     The values contained in \code{normalized.dataset} must be either finite or NA.  

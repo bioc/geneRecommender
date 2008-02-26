@@ -12,7 +12,7 @@ gr.normalize(unnormalized.dataset)
 }
 \arguments{
   \item{unnormalized.dataset}{
-    A matix or exprSet containing the normalized gene expression data.  
+    A matrix or ExpressionSet containing the normalized gene expression data.  
     The rows correspond to genes, the columns correspond to experiments, and the
     entries correspond to the gene expression levels.  The rows must be labeled.  
   } 

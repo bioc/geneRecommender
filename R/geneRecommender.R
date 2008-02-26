@@ -9,54 +9,54 @@ function(normalized.dataset, query, fun = median, ngenes = NULL, extra = FALSE){
     data.format <- "matrix"
     proceed <- TRUE
     if (is.null(dimnames(normalized.dataset)[[1]])){
-      warning("Input dataset did not have row names.  ")
+      warning("Input dataset did not have row names.")
       proceed <- FALSE
     }
     if (mode(normalized.dataset) != "numeric"){
-      warning("Input dataset was not numeric.  ")
+      warning("Input dataset was not numeric.")
       proceed <- FALSE
     } 
   }
-  if (is(normalized.dataset, "exprSet") == TRUE){
-    data.format <- "exprSet"
+  if (is(normalized.dataset, "ExpressionSet") == TRUE){
+    data.format <- "ExpressionSet"
     proceed <- TRUE
     if (is.null(dimnames(exprs(normalized.dataset))[[1]])){
-      warning("Input dataset did not have row names.  ")
+      warning("Input dataset did not have row names.")
       proceed <- FALSE
     }
     if (mode(exprs(normalized.dataset)) != "numeric"){
-      warning("Input dataset was not numeric.  ")
+      warning("Input dataset was not numeric.")
       proceed <- FALSE
     } 
   }
   if (proceed == FALSE){
-    warning("Input dataset was not of class matrix or class exprSet.  ")
+    warning("Input dataset was not of class matrix or class ExpressionSet.")
   }
 
   if (is.vector(query) != TRUE){
-    warning("Input query was not a vector.  ")
+    warning("Input query was not a vector.")
     proceed <- FALSE
   }
   if (length(query) < 2){
-    warning("Input query contained less than 2 elements.  ")
+    warning("Input query contained less than 2 elements.")
     proceed <- FALSE
   }
   if (is.function(fun) != TRUE){
-    warning("Argument fun was not a function.  ")
+    warning("Argument fun was not a function.")
     proceed <- FALSE
   } 
   if (is.null(ngenes) != TRUE){
     if (is.finite(ngenes) != TRUE){
-      warning("Argument ngenes was not a real number.  ")
+      warning("Argument ngenes was not a real number.")
       proceed <- FALSE
     }
   } 
   if (is.logical(extra) != TRUE){
-    warning("Argument extra was not logical.  ")
+    warning("Argument extra was not logical.")
     proceed <- FALSE
   } 
   if (proceed != TRUE){
-    warning("Function aborted due to invalid arguments.  ")
+    warning("Function aborted due to invalid arguments.")
   } 
 
   #proceed if no errors were found
@@ -67,11 +67,10 @@ function(normalized.dataset, query, fun = median, ngenes = NULL, extra = FALSE){
       y.i.j <- normalized.dataset
       rm(normalized.dataset)
     }
-    if (data.format == "exprSet"){
+    if (data.format == "ExpressionSet"){
       y.i.j <- exprs(normalized.dataset)
       rm(normalized.dataset)
     }
-
 
     #initialize variables
     n <- dim(y.i.j)[1]
@@ -220,28 +219,28 @@ function(unnormalized.dataset){
     data.format <- "matrix"
     proceed <- TRUE
     if (is.null(dimnames(unnormalized.dataset)[[1]])){
-      warning("Input dataset did not have row names.  ")
+      warning("Input dataset did not have row names.")
       proceed <- FALSE
     }
     if (mode(unnormalized.dataset) != "numeric"){
-      warning("Input dataset was not numeric.  ")
+      warning("Input dataset was not numeric.")
       proceed <- FALSE
     } 
   }
-  if (is(unnormalized.dataset, "exprSet") == TRUE){
-    data.format <- "exprSet"
+  if (is(unnormalized.dataset, "ExpressionSet") == TRUE){
+    data.format <- "ExpressionSet"
     proceed <- TRUE
     if (is.null(dimnames(exprs(unnormalized.dataset))[[1]])){
-      warning("Input dataset did not have row names.  ")
+      warning("Input dataset did not have row names.")
       proceed <- FALSE
     }
     if (mode(exprs(unnormalized.dataset)) != "numeric"){
-      warning("Input dataset was not numeric.  ")
+      warning("Input dataset was not numeric.")
       proceed <- FALSE
     } 
   }
   if (proceed == FALSE){
-    warning("Input dataset was not of class matrix or class exprSet.  ")
+    warning("Input dataset was not of class matrix or class ExpressionSet.")
   }
 
   #proceed if no errors were found
@@ -251,7 +250,7 @@ function(unnormalized.dataset){
       y.i.j <- unnormalized.dataset
       rm(unnormalized.dataset)
     }
-    if (data.format == "exprSet"){
+    if (data.format == "ExpressionSet"){
       y.i.j <- exprs(unnormalized.dataset)
       exprs(unnormalized.dataset) <- array(0, dim = c(1,1))
     }
@@ -272,7 +271,7 @@ function(unnormalized.dataset){
       normalized.dataset <- y.i.j
       rm(y.i.j)
     }
-    if (data.format == "exprSet"){
+    if (data.format == "ExpressionSet"){
       normalized.dataset <- unnormalized.dataset
       rm(unnormalized.dataset)
       exprs(normalized.dataset) <- y.i.j
@@ -304,4 +303,3 @@ function(normalized.dataset, query, fun = median){
 }
 
 require("Biobase")
-
