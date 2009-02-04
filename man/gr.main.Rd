@@ -59,7 +59,7 @@ gr.main(normalized.dataset, query, fun = median, ngenes = NULL, extra = FALSE)
     For a given gene and a given experiment, the \code{contribution} indicates how
     strongly the experiment suggests that the gene should be high ranking.  
     Using notation from the article, \code{contribution} is defined as 
-    $\bar{Y}_{Q,j} \times Y_{ij}$.  
+    \eqn{\bar{Y}_{Q,j} \times Y_{ij}}.  
   }
 }
 \note{
