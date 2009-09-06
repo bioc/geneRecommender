@@ -1,5 +1,5 @@
 Package: geneRecommender
-Version: 1.17.0
+Version: 1.17.1
 Date: 2005-04-5
 Title: A gene recommender algorithm to identify genes coexpressed with
         a query set of genes
@@ -12,5 +12,5 @@ Description: This package contains a targeted clustering algorithm for
         the analysis of microarray data. The algorithm can aid in the
         discovery of new genes with similar functions to a given list
         of genes already known to have closely related functions.
-License: GPL version 2 or newer
+License: GPL (>= 2)
 biocViews: Microarray, Clustering
