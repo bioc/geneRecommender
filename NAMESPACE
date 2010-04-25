@@ -1,0 +1,6 @@
+import(methods)
+importClasses(Biobase, ExpressionSet, eSet, Versioned, VersionedBiobase)
+importMethodsFrom(Biobase, exprs, "exprs<-")
+importFrom(stats, median, na.omit, var)
+
+export(gr.cv, gr.main, gr.normalize)

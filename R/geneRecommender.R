@@ -301,5 +301,3 @@ function(normalized.dataset, query, fun = median){
   }
   as.vector(result)
 }
-
-require("Biobase")

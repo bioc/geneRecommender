@@ -7,7 +7,8 @@ Author: Gregory J. Hather <ghather@stat.berkeley.edu>, with
         contributions from Art B. Owen <art@stat.stanford.edu> and
         Terence P. Speed <terry@stat.berkeley.edu>
 Maintainer: Greg Hather <ghather@stat.berkeley.edu>
-Depends: R (>= 1.8.0), Biobase (>= 1.4.22)
+Depends: R (>= 1.8.0), Biobase (>= 1.4.22), methods
+Imports: Biobase, methods, stats
 Description: This package contains a targeted clustering algorithm for
         the analysis of microarray data. The algorithm can aid in the
         discovery of new genes with similar functions to a given list
