@@ -1,5 +1,5 @@
 Package: geneRecommender
-Version: 1.23.0
+Version: 1.23.1
 Date: 2005-04-5
 Title: A gene recommender algorithm to identify genes coexpressed with
         a query set of genes
