@@ -1,12 +1,12 @@
 Package: geneRecommender
-Version: 1.73.0
+Version: 1.73.1
 Date: 2005-04-5
 Title: A gene recommender algorithm to identify genes coexpressed with
         a query set of genes
-Author: Gregory J. Hather <ghather@stat.berkeley.edu>, with
+Author: Gregory J. Hather <ghather@gmail.com>, with
         contributions from Art B. Owen <art@stat.stanford.edu> and
         Terence P. Speed <terry@stat.berkeley.edu>
-Maintainer: Greg Hather <ghather@stat.berkeley.edu>
+Maintainer: Greg Hather <ghather@gmail.com>
 Depends: R (>= 1.8.0), Biobase (>= 1.4.22), methods
 Imports: Biobase, methods, stats
 Description: This package contains a targeted clustering algorithm for
